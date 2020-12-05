@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RecoverySystem;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,6 +50,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -64,6 +66,7 @@ import org.lineageos.updater.controller.UpdaterService;
 import org.lineageos.updater.download.DownloadClient;
 import org.lineageos.updater.misc.BuildInfoUtils;
 import org.lineageos.updater.misc.Constants;
+import org.lineageos.updater.misc.FileUtils;
 import org.lineageos.updater.misc.StringGenerator;
 import org.lineageos.updater.misc.Utils;
 import org.lineageos.updater.model.UpdateInfo;
@@ -86,6 +89,10 @@ public class UpdatesActivity extends UpdatesListActivity {
     private RotateAnimation mRefreshAnimation;
 
     private boolean mIsTV;
+
+    private final File TARGET_LOCAL_FILE = new File("/data/cipheros_updates/update.zip");
+    private int OPEN_DIRECTORY_REQUEST_CODE = 1;
+    private File mLocalUpdateFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,6 +227,25 @@ public class UpdatesActivity extends UpdatesListActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    // Functions for picking file from local storage
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Copy the file to the updates directory and tell the recovery system to install it
+        if (requestCode == OPEN_DIRECTORY_REQUEST_CODE && data != null) {
+            mLocalUpdateFile = new File("/sdcard/" + data.getData().getPath().split(":")[1]);
+            try {
+                FileUtils.copyFile(mLocalUpdateFile, TARGET_LOCAL_FILE);
+                RecoverySystem.installPackage(getApplicationContext(), TARGET_LOCAL_FILE);
+            } catch (IOException e) {
+                Log.d(TAG, "Failed to copy the update file!");
+                Toast.makeText(getApplicationContext(), "Failed to copy the update", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -236,6 +262,20 @@ public class UpdatesActivity extends UpdatesListActivity {
                         Uri.parse(Utils.getChangelogURL(this)));
                 startActivity(openUrl);
                 return true;
+            }
+            case R.id.install_local_file: {
+                if (!Utils.isABDevice()) {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+                    intent.setType("application/zip");
+
+                    if (intent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(Intent.createChooser(intent, "Select the package"), OPEN_DIRECTORY_REQUEST_CODE);
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Your device is not compatible with this option", Toast.LENGTH_LONG).show();
+                }
             }
         }
         return super.onOptionsItemSelected(item);
