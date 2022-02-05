@@ -164,4 +164,7 @@
     <string name="local_update_import_install">Install</string>
     <string name="local_update_name">Local install</string>
 
+    <string name="info_dialog_title" translatable="false">Did you know?</string>
+    <string name="info_dialog_message" translatable="false">CipherOS updates are full installation packages. That means you can always install only the latest update, even if you skipped some in between!</string>
+    <string name="info_dialog_ok" translatable="false">Thanks for the info!</string>
 </resources>
