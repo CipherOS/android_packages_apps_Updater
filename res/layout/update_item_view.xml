@@ -37,7 +37,7 @@
                 android:paddingBottom="8sp"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="14sp"
-                tools:text="LineageOS" />
+                tools:text="CipherOS" />
 
             <TextView
                 android:id="@+id/build_date"
