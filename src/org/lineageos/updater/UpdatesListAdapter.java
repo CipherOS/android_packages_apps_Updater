@@ -108,6 +108,7 @@ public class UpdatesListAdapter extends RecyclerView.Adapter<UpdatesListAdapter.
 
         private final ProgressBar mProgressBar;
         private final TextView mProgressText;
+        private final TextView mPercentage;
 
         public ViewHolder(final View view) {
             super(view);
@@ -119,6 +120,7 @@ public class UpdatesListAdapter extends RecyclerView.Adapter<UpdatesListAdapter.
 
             mProgressBar = view.findViewById(R.id.progress_bar);
             mProgressText = view.findViewById(R.id.progress_text);
+            mPercentage = view.findViewById(R.id.progress_percent);
         }
     }
 

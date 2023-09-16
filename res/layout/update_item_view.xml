@@ -84,6 +84,14 @@
                     android:singleLine="true"
                     tools:text="300 MB"
                     tools:visibility="invisible" />
+
+                    <TextView
+                        android:id="@+id/progress_percent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        tools:text="65%" />
             </RelativeLayout>
 
             <LinearLayout
