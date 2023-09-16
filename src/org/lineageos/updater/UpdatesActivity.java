@@ -101,9 +101,6 @@ public class UpdatesActivity extends UpdatesListActivity implements UpdateImport
 
         mUpdateImporter = new UpdateImporter(this, this);
 
-        UiModeManager uiModeManager = getSystemService(UiModeManager.class);
-        mIsTV = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
-
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         mAdapter = new UpdatesListAdapter(this);
         recyclerView.setAdapter(mAdapter);
