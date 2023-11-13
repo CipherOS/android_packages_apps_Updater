@@ -477,7 +477,7 @@ public class UpdaterController {
     }
 
     public void deleteUpdate(String downloadId) {
-        Log.d(TAG, "Cancelling " + downloadId);
+        Log.d(TAG, "Deleting Update " + downloadId);
         if (!mDownloads.containsKey(downloadId) || isDownloading(downloadId)) {
             return;
         }
@@ -489,7 +489,8 @@ public class UpdaterController {
             update.setPersistentStatus(UpdateStatus.Persistent.UNKNOWN);
             deleteUpdateAsync(update);
 
-            if (!update.getAvailableOnline()) {
+            final boolean isLocalUpdate = Update.LOCAL_ID.equals(downloadId);
+            if (!isLocalUpdate && !update.getAvailableOnline()) {
                 Log.d(TAG, "Download no longer available online, removing");
                 mDownloads.remove(downloadId);
                 notifyUpdateDelete(downloadId);
