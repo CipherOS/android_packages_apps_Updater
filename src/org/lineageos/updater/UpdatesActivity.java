@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemProperties;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -232,6 +233,12 @@ public class UpdatesActivity extends UpdatesListActivity implements UpdateImport
             mUpdateImporter.openImportPicker();
             return true;
         }
+          else if (itemId == R.id.menu_show_changelog) {
+               Intent openUrl = new Intent(Intent.ACTION_VIEW,
+               Uri.parse(Utils.getChangelogURL(this)));
+               startActivity(openUrl);
+                return true;
+            }
         return super.onOptionsItemSelected(item);
     }
 
