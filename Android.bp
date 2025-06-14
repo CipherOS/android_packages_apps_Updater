@@ -1,0 +1,41 @@
+//
+// Copyright (C) 2025 The CipherOS Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+android_app_import {
+	name: "Updater",
+	apk: "prebuilt/priv-app/Updater.apk",
+	certificate: "platform",
+	dex_preopt: {
+		enabled: false,
+	},
+	privileged: true,
+    system_ext_specific: true,
+
+    overrides: [
+        "SystemUpdater",
+    ],
+
+    required: [
+        "privapp_whitelist_com.cipheros.updater",
+        "default-permissions_com.cipheros.updater"
+    ],
+}
+
+prebuilt_etc {
+    name: "privapp_whitelist_com.cipheros.updater",
+    system_ext_specific: true,
+    sub_dir: "permissions",
+    src: "prebuilt/etc/permissions/privapp_whitelist_com.cipheros.updater.xml",
+    filename_from_src: true,
+}
+
+prebuilt_etc {
+    name: "default-permissions_com.cipheros.updater",
+    system_ext_specific: true,
+    sub_dir: "default-permissions",
+    src: "prebuilt/etc/permissions/default-permissions_com.cipheros.updater.xml",
+    filename_from_src: true,
+}
